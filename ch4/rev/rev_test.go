@@ -18,3 +18,9 @@ func TestReverse1(t *testing.T) {
 	reverse1(&a)
 	fmt.Printf("reverse1=%v\n", a)
 }
+
+func TestReverseBr(t *testing.T) {
+	br := []byte("你好，世界")
+	reverseBr(br)
+	fmt.Println(string(br))
+}
