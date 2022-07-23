@@ -1,5 +1,7 @@
 package non_repeat
 
+import "unicode"
+
 func RemoveRepeat(s []string) []string {
 	count := 0
 	pre := ""
@@ -14,4 +16,24 @@ func RemoveRepeat(s []string) []string {
 		}
 	}
 	return s[:len(s)-count]
+}
+
+func RemoveDupSpace(br []byte) []byte {
+	if len(br) == 0 {
+		return br
+	}
+	rs := []rune(string(br))
+	i := 0
+	isSpace := false
+	for _, r := range rs {
+		if isSpace && unicode.IsSpace(r) {
+			continue
+		}
+		if unicode.IsSpace(r) {
+			isSpace = true
+		}
+		rs[i] = r
+		i++
+	}
+	return []byte(string(rs[:i]))
 }
