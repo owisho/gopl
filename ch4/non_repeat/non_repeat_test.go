@@ -13,7 +13,7 @@ func TestRemoveRepeat(t *testing.T) {
 }
 
 func TestRemoveDupSpace(t *testing.T) {
-	s := "a    c"
+	s := "a    c     b"
 	br := RemoveDupSpace([]byte(s))
 	fmt.Println(string(br))
 }

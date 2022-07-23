@@ -29,6 +29,7 @@ func RemoveDupSpace(br []byte) []byte {
 		if isSpace && unicode.IsSpace(r) {
 			continue
 		}
+		isSpace = false
 		if unicode.IsSpace(r) {
 			isSpace = true
 		}
