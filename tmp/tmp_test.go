@@ -73,3 +73,22 @@ func TestMemcache(t *testing.T) {
 	}
 	fmt.Printf("write %d byte to file %s", n, f1.Name())
 }
+
+type Employee struct {
+	ID            int
+	Name, Address string
+	DoB           time.Time
+	Position      string
+	Salary        int
+	ManagerID     int
+}
+
+func EmployeeByID(id int) Employee {
+	return Employee{}
+}
+
+func TestEmployeeByID(t *testing.T) {
+	fmt.Println(EmployeeByID(1).ID)
+	employee := EmployeeByID(1)
+	employee.Name = "test"
+}
