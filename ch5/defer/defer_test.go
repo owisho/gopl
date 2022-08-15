@@ -7,7 +7,7 @@ import (
 
 func TestDefer(t *testing.T) {
 	defer func() {
-		fmt.Println("aaaaaa")
+		fmt.Println("aaa")
 	}()
 	defer trace("test")
 	defer trace("test1")()
