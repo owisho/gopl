@@ -13,7 +13,8 @@ func main() {
 	flag.StringVar(&url, "url", "", "url链接")
 	flag.Parse()
 	fmt.Println(url)
-	title(url)
+	err := title(url)
+	fmt.Println(err)
 }
 
 func title(url string) error {
@@ -21,7 +22,9 @@ func title(url string) error {
 	if err != nil {
 		return err
 	}
+	fmt.Printf("resp statuscode = %d\n", resp.StatusCode)
 	ct := resp.Header.Get("Content-Type")
+	fmt.Printf("content-type = %s\n", ct)
 	if ct != "text/html" && !strings.HasPrefix(ct, "text/html;") {
 		resp.Body.Close()
 		return fmt.Errorf("%s has type %s, not text/html", url, ct)
