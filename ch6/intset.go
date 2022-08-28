@@ -22,6 +22,12 @@ func (s *IntSet) Add(x int) {
 	s.words[word] |= 1 << bit
 }
 
+func (s *IntSet) AddAll(x ...int) {
+	for i := range x {
+		s.Add(x[i])
+	}
+}
+
 func (s *IntSet) Remove(x int) {
 	word, bit := x/64, uint(x%64)
 	if word > len(s.words) {
@@ -46,10 +52,46 @@ func (s *IntSet) Copy() *IntSet {
 	}
 }
 
+//UnionWith 并集
 func (s *IntSet) UnionWith(t *IntSet) {
 	for i, tword := range t.words {
 		if i < len(s.words) {
 			s.words[i] |= tword
+		} else {
+			s.words = append(s.words, tword)
+		}
+	}
+}
+
+//IntersectWith 交集
+func (s *IntSet) IntersectWith(t *IntSet) {
+	for i, tword := range t.words {
+		if i < len(s.words) {
+			s.words[i] &= tword
+		}
+	}
+	if len(t.words) < len(s.words) {
+		for i := len(t.words); i < len(s.words); i++ {
+			s.words[i] &= 0
+		}
+	}
+}
+
+//DifferenceWith A中出现B中没出现的
+func (s *IntSet) DifferenceWith(t *IntSet) {
+	for i, tword := range t.words {
+		if i < len(s.words) {
+			s.words[i] = s.words[i] ^ tword
+			s.words[i] &= ^tword
+		}
+	}
+}
+
+//SymmetricDifference A中出现B中没出现的，或A中没出现B中出现的
+func (s *IntSet) SymmetricDifference(t *IntSet) {
+	for i, tword := range t.words {
+		if i < len(s.words) {
+			s.words[i] = s.words[i] ^ tword
 		} else {
 			s.words = append(s.words, tword)
 		}
