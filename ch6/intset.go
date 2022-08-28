@@ -22,6 +22,30 @@ func (s *IntSet) Add(x int) {
 	s.words[word] |= 1 << bit
 }
 
+func (s *IntSet) Remove(x int) {
+	word, bit := x/64, uint(x%64)
+	if word > len(s.words) {
+		return
+	}
+	s.words[word] &= ^(1 << bit)
+}
+
+func (s *IntSet) Clear() {
+	for i := range s.words {
+		s.words[i] &= 0
+	}
+}
+
+func (s *IntSet) Copy() *IntSet {
+	arr := make([]uint64, len(s.words))
+	for i, word := range s.words {
+		arr[i] = word
+	}
+	return &IntSet{
+		words: arr,
+	}
+}
+
 func (s *IntSet) UnionWith(t *IntSet) {
 	for i, tword := range t.words {
 		if i < len(s.words) {
@@ -30,6 +54,21 @@ func (s *IntSet) UnionWith(t *IntSet) {
 			s.words = append(s.words, tword)
 		}
 	}
+}
+
+func (s *IntSet) Len() int {
+	len := 0
+	for _, word := range s.words {
+		if word == 0 {
+			continue
+		}
+		for j := 0; j < 64; j++ {
+			if (word & (1 << j)) != 0 {
+				len++
+			}
+		}
+	}
+	return len
 }
 
 func (s *IntSet) String() string {
