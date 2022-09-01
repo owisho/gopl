@@ -1,5 +1,11 @@
 package treesort
 
+import (
+	"bytes"
+	"fmt"
+	"strings"
+)
+
 type tree struct {
 	value       int
 	left, right *tree
@@ -34,4 +40,20 @@ func add(t *tree, value int) *tree {
 		t.right = add(t.right, value)
 	}
 	return t
+}
+
+func (t *tree) String() string {
+	var buf bytes.Buffer
+	if t.left != nil {
+		buf.WriteString(t.left.String() + " ")
+	}
+	buf.WriteString(fmt.Sprintf("%d ", t.value))
+	if t.right != nil {
+		buf.WriteString(t.right.String() + " ")
+	}
+	s := buf.String()
+	if strings.HasSuffix(s, " ") {
+		s = s[0 : len(s)-1]
+	}
+	return s
 }

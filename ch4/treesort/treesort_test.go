@@ -11,3 +11,13 @@ func TestTreesort(t *testing.T) {
 	Sort(s)
 	fmt.Println(s)
 }
+
+func TestPrintTree(t *testing.T) {
+	tr := &tree{}
+	tr = add(tr, 4)
+	tr = add(tr, 2)
+	tr = add(tr, 5)
+	tr = add(tr, 3)
+	tr = add(tr, 7)
+	fmt.Print(tr)
+}
