@@ -15,85 +15,111 @@ import (
 	"testing"
 )
 
-func TestTaskNum(t *testing.T) {
-	f, _ := os.Open("/Users/wangyang/Downloads/preprocess_task.csv")
-	defer f.Close()
-	csvReader := csv.NewReader(f)
-	data, _ := csvReader.ReadAll()
+//var interestPreprcessMap = map[string]bool{
+//	"DV_Trend_Preproc_delta_nl_supervised_keywords_51_20220912_af": true,
+//	"DV_Trend_Preproc_delta_nl_keywords_51_20220912_af":            true,
+//}
 
-	taskMap := make(map[string]int)
-	for _, line := range data {
-		appName := line[2]
-		if strings.HasSuffix(appName, "_af") {
-			taskMap[appName] += 1
-		}
-	}
-	fmt.Printf("taskMap len= %d,\n taskMap=%v\n", len(taskMap), taskMap)
-}
+var interestPreprocessFeatures = []string{"nl_supervised_keywords_51", "nl_keywords_51"}
 
-var interestPreprcessMap = map[string]bool{
-	"DV_Trend_Preproc_delta_nl_supervised_keywords_51_20220912_af": true,
-	"DV_Trend_Preproc_delta_nl_keywords_51_20220912_af":            true,
-}
+//var tfidfPreprocessMap = map[string]bool{
+//	"DV_Trend_Preproc_delta_nl_supervised_keywords_0_20220912": true,
+//	"DV_Trend_Preproc_delta_nl_keywords_0_20220912":            true,
+//}
 
-var tfidfPreprocessMap = map[string]bool{
-	"DV_Trend_Preproc_delta_nl_supervised_keywords_0_20220912": true,
-	"DV_Trend_Preproc_delta_nl_keywords_0_20220912":            true,
-}
+var tfidfPreprocessFeatures = []string{"nl_supervised_keywords_0", "nl_keywords_0"}
 
 func TestPreprocessYarnInfo(t *testing.T) {
-	f, _ := os.Open("/Users/wangyang/Downloads/preprocess_task.csv")
+	f, _ := os.Open("/Users/wangyang/Desktop/preprocess_task.csv")
 	defer f.Close()
 	csvReader := csv.NewReader(f)
-	data, _ := csvReader.ReadAll()
-	for _, line := range data {
+	records, _ := csvReader.ReadAll()
+	for _, line := range records {
 		appId, appName := line[0], line[2]
-		//if strings.HasSuffix(appName, "_af") &&
-		//	!interestPreprcessMap[appName] {
-		//	//if strings.HasSuffix(appName, "_af") {
-		//	fmt.Println(appId)
-		//}
-		//interest preprocess
-		if interestPreprcessMap[appName] {
-			fmt.Println(appId)
+		//过滤title
+		if appName == "Name" {
+			continue
 		}
-		//tfidf preprocess
-		//if tfidfPreprocessMap[appName]{
-		//	fmt.Println(appId)
-		//}
+		//过滤市场
+		if !strings.HasSuffix(appName, "_af") {
+			continue
+		}
+		//过滤时间
+		if !strings.Contains(appName, "_20230204") {
+			continue
+		}
+		//过滤interest feature
+		var toContinue = false
+		for _, feature := range interestPreprocessFeatures {
+			if strings.Contains(appName, feature) {
+				toContinue = true
+				break
+			}
+		}
+		if toContinue {
+			continue
+		}
+		//打印最终结果
+		println(appId)
 	}
 }
 
-var interestAggMap = map[string]bool{
-	"Davinci_Pref_Aggr_20220912_nl_supervised_keywords_51_af": true,
-	"Davinci_Pref_Aggr_20220912_nl_keywords_51_af":            true,
-}
+//var interestAggMap = map[string]bool{
+//	"Davinci_Pref_Aggr_20220912_nl_supervised_keywords_51_af": true,
+//	"Davinci_Pref_Aggr_20220912_nl_keywords_51_af":            true,
+//}
 
-var tfidfAggMap = map[string]bool{
-	"Davinci_Pref_Aggr_20220912_nl_supervised_keywords_tfidf_511_af": true,
-	"Davinci_Pref_Aggr_20220912_nl_keywords_tfidf_511_af":            true,
-}
+var interestAggFeatures = []string{"nl_supervised_keywords_51", "nl_keywords_51"}
+
+//var tfidfAggMap = map[string]bool{
+//	"Davinci_Pref_Aggr_20220912_nl_supervised_keywords_tfidf_511_af": true,
+//	"Davinci_Pref_Aggr_20220912_nl_keywords_tfidf_511_af":            true,
+//}
+
+var tfidfAggFeatures = []string{"nl_supervised_keywords_tfidf_511", "nl_keywords_tfidf_511"}
 
 func TestAggYarnInfo(t *testing.T) {
-	f, _ := os.Open("/Users/wangyang/Downloads/agg_task.csv")
+	f, _ := os.Open("/Users/wangyang/Desktop/aggr_task.csv")
 	defer f.Close()
 	csvReader := csv.NewReader(f)
 	data, _ := csvReader.ReadAll()
 	for _, line := range data {
 		appId, appName := line[0], line[2]
-		//if strings.HasSuffix(appName, "_af") &&
-		//	!interestAggMap[appName] &&
-		//	!tfidfAggMap[appName] {
-		//	fmt.Println(appId)
-		//}
-		// interest agg application
-		if interestAggMap[appName] {
-			fmt.Println(appId)
+		//过滤title
+		if appName == "Name" {
+			continue
 		}
-		//tfidf agg application
-		//if tfidfAggMap[appName]{
-		//	fmt.Println(appId)
-		//}
+		//过滤市场
+		if !strings.HasSuffix(appName, "_af") {
+			continue
+		}
+		//过滤时间
+		if !strings.Contains(appName, "_20230204") {
+			continue
+		}
+		//过滤interest feature
+		var toContinue = false
+		for _, feature := range interestAggFeatures {
+			if strings.Contains(appName, feature) {
+				toContinue = true
+				break
+			}
+		}
+		if toContinue {
+			continue
+		}
+		//过滤tfidf feature
+		for _, feature := range tfidfAggFeatures {
+			if strings.Contains(appName, feature) {
+				toContinue = true
+				break
+			}
+		}
+		if toContinue {
+			continue
+		}
+		//打印最终结果
+		println(appId)
 	}
 }
 
@@ -104,9 +130,9 @@ func TestYarnInfo(t *testing.T) {
 	for _, line := range strings.Split(string(br), "\n") {
 		line = strings.TrimSpace(line)
 		fmt.Println(line)
-		dbImpPre := "http://n17-07-04:8088/cluster/app/"
-		//preProcessPre := "http://a31-01.fn.lati.osa:8088/cluster/app/"
-		cost, mused, cputime, err := GetYarnInfo(dbImpPre + line)
+		yarnsite := "http://n17-07-04:8088/cluster/app/" //非洲 yarn 地址
+		//yarnsite := "http://a31-01.fn.lati.osa:8088/cluster/app/" //us yarn 地址
+		cost, mused, cputime, err := GetYarnInfo(yarnsite + line)
 		if err != nil {
 			fmt.Println(err)
 			break
